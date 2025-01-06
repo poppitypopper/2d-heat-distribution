@@ -142,7 +142,35 @@ plt.colorbar()
 plt.show()
 ```
 
-Now, we add our skeleton image to the bulk image and set temperatures after visualisation. 
+Now, we add our skeleton image to the bulk image and set temperatures after visualisation, and move on to animatiing the temperature profiles. We will end up with this after applying the discrete-time heat equation iteratively.
+
+```python3
+def update_temperature(temp_array, alpha, dt, dx, dy):
+    """
+    Update temperature array using the 2D heat equation.
+    [Previous implementation remains the same]
+    """
+    new_temp = np.copy(temp_array)
+    rows, cols = temp_array.shape
+    rx = alpha * dt / (dx * dx)
+    ry = alpha * dt / (dy * dy)
+    
+    if rx + ry > 0.5:
+        raise ValueError("Simulation may be unstable. Decrease dt or increase dx/dy")
+    
+    for i in range(1, rows-1):
+        for j in range(1, cols-1):
+            if temp_array[i][j] in [100, 200, 300]:
+                continue
+            new_temp[i, j] = temp_array[i, j] + \
+                rx * (temp_array[i+1, j] - 2*temp_array[i, j] + temp_array[i-1, j]) + \
+                ry * (temp_array[i, j+1] - 2*temp_array[i, j] + temp_array[i, j-1])
+    
+    return new_temp
+```
+
+
+
 
 
 
